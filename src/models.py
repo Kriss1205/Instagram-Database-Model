@@ -33,6 +33,8 @@ class post(Base):
     content = Column(String(250), nullable=False)
     likes = Column(Integer, nullable=True)
     comments = Column(Integer, nullable=True)
+    person = db.relationship('person', backref='Post', lazy=True)
+
     
 class comments(Base):
     __tablename__ = 'comments'
@@ -40,19 +42,24 @@ class comments(Base):
     text = Column(String(250), nullable=False)
     post_id = Column(Integer, ForeignKey('post.id'))
     user_id = Column(Integer, ForeignKey('user.id'))
+    person = db.relationship('person', backref='Comments', lazy=True)
+
 
 class likes(Base):
     __tablename__ = 'likes'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     post_id = Column(Integer, ForeignKey('post.id'))
-    comments_id = Column(Integer, ForeignKey('comments.id'))    
+    comments_id = Column(Integer, ForeignKey('comments.id'))   
+    person = db.relationship('person', backref='Likes', lazy=True)
+
    
-class follow(Base):
+class followers(Base):
     __tablename__ = 'followers'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user_to_id = Column(Integer, ForeignKey('user.id'))
+    person = db.relationship('person', backref='Follow', lazy=True)
 
     
 class following(Base):
@@ -60,7 +67,7 @@ class following(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user_to_id = Column(Integer, ForeignKey('user.id'))
-        
+    person = db.relationship('person', backref='Following', lazy=True)   
     
 
     def to_dict(self):
@@ -73,3 +80,5 @@ try:
 except Exception as e:
     print("There was a problem generating the diagram")
     raise e
+
+# need to add href to all tables like in the example that Laura sent me through slack 
